@@ -14,6 +14,7 @@ import { EditProfileInput, EditProfileOutput } from './dtos/edit-profile.dto'
 import { Verification } from './entities/verification.entity'
 import { UserProfileOutput } from './dtos/user-profile.dto'
 import { VerifyEmailOutput } from './dtos/verify-email.dto'
+import { MailService } from 'src/mail/mail.service'
 
 @Injectable()
 export class UsersService {
@@ -23,6 +24,7 @@ export class UsersService {
     private readonly verifications: Repository<Verification>,
     private readonly config: ConfigService,
     private readonly jwtService: JwtService,
+    private readonly mailService: MailService,
   ) {}
 
   async createAccount({
@@ -40,11 +42,14 @@ export class UsersService {
       const user = await this.users.save(
         this.users.create({ email, password, role }),
       )
-      await this.verifications.save(
+      const verification = await this.verifications.save(
         this.verifications.create({
           user,
         }),
       )
+
+      this.mailService.sendVerificationEmail(user.email, verification.code)
+
       return { ok: true }
     } catch (e) {
       return { ok: false, error: `Couldn't create account` }
@@ -77,7 +82,7 @@ export class UsersService {
         }
       }
 
-      console.log(user)
+      console.log('@@@@@@@@@@@@', user)
 
       const token = this.jwtService.sign(user.id)
 
@@ -112,11 +117,16 @@ export class UsersService {
     { email, password }: EditProfileInput,
   ): Promise<EditProfileOutput> {
     try {
-      const user = await this.users.findOne(userId)
+      console.log('userId=', userId)
+      const user = await this.users.findOne({ id: userId })
+      console.log('editProfile', user)
       if (email) {
         user.email = email
         user.verfifed = false
-        await this.verifications.save(this.verifications.create({ user }))
+        const verification = await this.verifications.save(
+          this.verifications.create({ user }),
+        )
+        this.mailService.sendVerificationEmail(user.email, verification.code)
       }
 
       if (password) {

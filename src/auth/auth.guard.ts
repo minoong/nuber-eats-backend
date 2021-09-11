@@ -11,7 +11,7 @@ export class AuthGuard implements CanActivate {
       return false
     }
 
-    console.log(user)
+    console.log('AuthGuard', user)
     return true
   }
 }
