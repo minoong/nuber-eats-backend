@@ -82,8 +82,6 @@ export class UsersService {
         }
       }
 
-      console.log('@@@@@@@@@@@@', user)
-
       const token = this.jwtService.sign(user.id)
 
       return {
@@ -117,9 +115,8 @@ export class UsersService {
     { email, password }: EditProfileInput,
   ): Promise<EditProfileOutput> {
     try {
-      console.log('userId=', userId)
       const user = await this.users.findOne({ id: userId })
-      console.log('editProfile', user)
+
       if (email) {
         user.email = email
         user.verfifed = false

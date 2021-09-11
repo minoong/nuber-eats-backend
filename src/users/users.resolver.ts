@@ -1,5 +1,5 @@
 import { UseGuards } from '@nestjs/common'
-import { Args, Context, Mutation, Query, Resolver } from '@nestjs/graphql'
+import { Args, Mutation, Query, Resolver } from '@nestjs/graphql'
 import { AuthUser } from 'src/auth/auth-user.decorator'
 import { AuthGuard } from 'src/auth/auth.guard'
 import {
@@ -54,7 +54,6 @@ export class UsersResolver {
     @AuthUser() authUser: User,
     @Args('input') editProfileInput: EditProfileInput,
   ): Promise<EditProfileOutput> {
-    console.log('editProfile resolver', authUser, editProfileInput)
     return this.usersService.editProfile(authUser.id, editProfileInput)
   }
 

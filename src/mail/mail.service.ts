@@ -26,8 +26,6 @@ export class MailService {
       return `${data.key}, ${data.value}`
     })
 
-    console.log(text)
-
     form.append('text', text.join())
 
     try {
@@ -43,7 +41,6 @@ export class MailService {
           body: form,
         },
       )
-      console.log(res.body)
     } catch (error) {
       console.log(error)
     }
