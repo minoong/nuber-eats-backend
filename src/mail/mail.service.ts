@@ -12,11 +12,11 @@ export class MailService {
     // this.sendEmail('test1', 'test1', { key: 'key', value: 'value' })
   }
 
-  private async sendEmail(
+  async sendEmail(
     subject: string,
     content: string,
     emailVars: EmailVars[],
-  ) {
+  ): Promise<boolean> {
     const form = new FormData()
     form.append('from', `LMW from Nuber Eats <mailgun@${this.options.domain}>`)
     form.append('to', `alsdndjdrktl@naver.com`)
@@ -29,7 +29,7 @@ export class MailService {
     form.append('text', text.join())
 
     try {
-      const res = await got(
+      const res = await got.post(
         `https://api.mailgun.net/v3/${this.options.domain}/messages`,
         {
           method: 'POST',
@@ -41,13 +41,14 @@ export class MailService {
           body: form,
         },
       )
+      return true
     } catch (error) {
-      console.log(error)
+      return false
     }
   }
 
   sendVerificationEmail(email: string, code: string) {
-    this.sendEmail('Verify Your Email', 'test', [
+    this.sendEmail('Verify Your Email', 'verify-email', [
       { key: 'code', value: code },
       { key: 'username', value: email },
     ])
