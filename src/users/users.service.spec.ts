@@ -177,6 +177,15 @@ describe('UserService', () => {
       expect(jwtService.sign).toHaveBeenCalledWith(expect.any(Number))
       expect(result).toEqual({ ok: true, token: 'signed-token-baby' })
     })
+
+    it('shloud fail on exception', async () => {
+      usersRepository.findOne.mockRejectedValue(new Error())
+      const result = await service.login(loginArgs)
+      expect(result).toEqual({
+        ok: false,
+        error: 'Could not login.',
+      })
+    })
   })
   describe('findById', () => {
     const findByIdArgs = {

@@ -87,8 +87,8 @@ export class UsersService {
       }
     } catch (error) {
       return {
-        ok: true,
-        error,
+        ok: false,
+        error: 'Could not login.',
       }
     }
   }
