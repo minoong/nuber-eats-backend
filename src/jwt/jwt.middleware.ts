@@ -1,8 +1,13 @@
 import { Injectable, NestMiddleware } from '@nestjs/common'
 import { NextFunction, Request, Response } from 'express'
 import { decode } from 'jsonwebtoken'
+import { User } from 'src/users/entities/user.entity'
 import { UsersService } from 'src/users/users.service'
 import { JwtService } from './jwt.service'
+
+interface RequestCustom extends Request {
+  user: User
+}
 
 @Injectable()
 export class JwtMiddleware implements NestMiddleware {
@@ -11,7 +16,7 @@ export class JwtMiddleware implements NestMiddleware {
     private readonly userService: UsersService,
   ) {}
 
-  async use(req: Request, res: Response, next: NextFunction) {
+  async use(req: RequestCustom, res: Response, next: NextFunction) {
     if ('x-jwt' in req.headers) {
       const token = req.headers['x-jwt']
       try {
