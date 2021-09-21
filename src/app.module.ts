@@ -63,8 +63,27 @@ import { OrderItem } from './orders/entities/order-item.entity'
       ],
     }),
     GraphQLModule.forRoot({
+      playground: true,
+      installSubscriptionHandlers: true,
       autoSchemaFile: true,
-      context: ({ req }) => ({ user: req['user'] }),
+      context: ({ req }) => {
+        // const headers = req['rawHeaders']
+        // const pos = headers.findIndex(
+        //   (el: string) => el.toUpperCase() === 'X-JWT',
+        // )
+
+        // console.log(headers, pos, pos ? headers[pos + 1] : undefined)
+        // console.log({
+        //   token: pos ? headers[pos + 1] : undefined,
+        // })
+
+        // return {
+        //   token: pos ? headers[pos + 1] : undefined,
+        // }
+        return {
+          potato: 'good',
+        }
+      },
     }),
     JwtModule.forRoot({
       privateKey: process.env.PRIVATE_KEY,
@@ -82,11 +101,4 @@ import { OrderItem } from './orders/entities/order-item.entity'
   controllers: [],
   providers: [],
 })
-export class AppModule implements NestModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer.apply(JwtMiddleware).forRoutes({
-      path: '/graphql',
-      method: RequestMethod.ALL,
-    })
-  }
-}
+export class AppModule {}
