@@ -3,7 +3,11 @@ import { Args, Mutation, Query, Resolver, Subscription } from '@nestjs/graphql'
 import { PubSub } from 'graphql-subscriptions'
 import { AuthUser } from 'src/auth/auth-user.decorator'
 import { Role } from 'src/auth/role.decorator'
-import { PUB_SUB } from 'src/common/common.constants'
+import {
+  NEW_COOKED_ORDER,
+  NEW_PENDING_ORDER,
+  PUB_SUB,
+} from 'src/common/common.constants'
 import { User } from 'src/users/entities/user.entity'
 import { CreateOrderInput, CreateOrderOutput } from './dtos/create-order.dto'
 import { EditOrderInput, EditOrderOutput } from './dtos/edit-order.dto'
@@ -25,7 +29,7 @@ export class OrderResolver {
     @AuthUser() customer: User,
     @Args('input') createOrderInput: CreateOrderInput,
   ): Promise<CreateOrderOutput> {
-    return this.ordersService.CreateOrder(customer, createOrderInput)
+    return this.ordersService.createOrder(customer, createOrderInput)
   }
 
   @Query((returns) => GetOrdersOutput)
@@ -55,23 +59,19 @@ export class OrderResolver {
     return this.ordersService.editOrder(user, editOrderInput)
   }
 
-  @Mutation((returns) => Boolean)
-  async potatoReady(@Args('potatoId') potatoId: number) {
-    await this.pubSub.publish('hotPotatos', {
-      readyPotato: potatoId,
-    })
-    return true
+  @Subscription((returns) => Order, {
+    filter: ({ pendingOrders: { ownerId } }, _, { user }) =>
+      ownerId === user.id,
+    resolve: ({ pendingOrders: { order } }) => order,
+  })
+  @Role(['Owner'])
+  pendingOrders() {
+    return this.pubSub.asyncIterator(NEW_PENDING_ORDER)
   }
 
-  @Subscription((returns) => String, {
-    filter: ({ readyPotato }, { potatoId }) => {
-      return readyPotato === potatoId
-    },
-    resolve: ({ readyPotato }) =>
-      `Your potato with the id ${readyPotato} is ready!`,
-  })
-  @Role(['Any'])
-  readyPotato(@Args('potatoId') potatoId: number) {
-    return this.pubSub.asyncIterator('hotPotatos')
+  @Subscription((returns) => Order)
+  @Role(['Delivery'])
+  cookedOrders() {
+    return this.pubSub.asyncIterator(NEW_COOKED_ORDER)
   }
 }
