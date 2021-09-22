@@ -54,13 +54,15 @@ export class OrderResolver {
 
   @Mutation((returns) => Boolean)
   potatoReady() {
-    pubsub.publish('hotPotatos', { readyPotatos: 'Your potato is ready.' })
+    pubsub.publish('hotPotatos', {
+      readyPotato: 'YOur potato is ready. love you.',
+    })
     return true
   }
 
   @Subscription((returns) => String)
   @Role(['Any'])
-  readyPotatos(@AuthUser() user: User) {
+  readyPotato(@AuthUser() user: User) {
     console.log('user', user)
     return pubsub.asyncIterator('hotPotatos')
   }

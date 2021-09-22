@@ -1,6 +1,5 @@
 import { Injectable, NestMiddleware } from '@nestjs/common'
 import { NextFunction, Request, Response } from 'express'
-import { decode } from 'jsonwebtoken'
 import { User } from 'src/users/entities/user.entity'
 import { UsersService } from 'src/users/users.service'
 import { JwtService } from './jwt.service'
