@@ -3,7 +3,7 @@ import { Cron, Interval, SchedulerRegistry, Timeout } from '@nestjs/schedule'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Restaurant } from 'src/restaurants/entities/restaurant.entity'
 import { User } from 'src/users/entities/user.entity'
-import { Repository } from 'typeorm'
+import { LessThan, Repository } from 'typeorm'
 import {
   CreatePaymentInput,
   CreatePaymentOutput,
@@ -17,7 +17,6 @@ export class PaymentsService {
     @InjectRepository(Payment) private readonly payments: Repository<Payment>,
     @InjectRepository(Restaurant)
     private readonly restaurants: Repository<Restaurant>,
-    private schedulerRegistry: SchedulerRegistry,
   ) {}
 
   async createPayment(
@@ -48,6 +47,12 @@ export class PaymentsService {
           restaurant,
         }),
       )
+      restaurant.isPromoted = true
+      const date = new Date()
+      date.setDate(date.getDate() + 7)
+      restaurant.promotedUntil = date
+
+      this.restaurants.save(restaurant)
 
       return {
         ok: true,
@@ -76,21 +81,19 @@ export class PaymentsService {
     }
   }
 
-  @Cron('30 * * * * *', {
-    name: 'myJob',
-  })
-  checkForPayments() {
-    console.log('Checking for payments...(cron')
-    const job = this.schedulerRegistry.getCronJob('myJob')
-    job.stop()
-  }
-  @Interval(5000)
-  checkForPaymentsI() {
-    console.log('Checking for payments...(Interval')
-  }
+  @Interval(2000)
+  async checkPromotedRestaurants() {
+    const restaurants = await this.restaurants.find({
+      isPromoted: true,
+      promotedUntil: LessThan(new Date()),
+    })
 
-  @Timeout(20000)
-  afterStarts() {
-    console.log('Congtraafds')
+    console.log(restaurants)
+
+    restaurants.forEach(async (restaurant) => {
+      restaurant.isPromoted = false
+      restaurant.promotedUntil = null
+      await this.restaurants.save(restaurant)
+    })
   }
 }
