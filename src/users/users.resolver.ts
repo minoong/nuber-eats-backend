@@ -8,7 +8,7 @@ import {
   CreateAccountOutput,
 } from './dtos/create-account.dto'
 import { EditProfileInput, EditProfileOutput } from './dtos/edit-profile.dto'
-import { LoginOutput, LogintInput } from './dtos/login.dto'
+import { LoginOutput, LoginInput } from './dtos/login.dto'
 import { UserProfileInput, UserProfileOutput } from './dtos/user-profile.dto'
 import { VerifyEmailInput, VerifyEmailOutput } from './dtos/verify-email.dto'
 import { User } from './entities/user.entity'
@@ -26,7 +26,7 @@ export class UsersResolver {
   }
 
   @Mutation((returns) => LoginOutput)
-  async login(@Args('input') loginInput: LogintInput): Promise<LoginOutput> {
+  async login(@Args('input') loginInput: LoginInput): Promise<LoginOutput> {
     return this.usersService.login(loginInput)
   }
 

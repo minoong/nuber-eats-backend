@@ -5,7 +5,7 @@ import {
   CreateAccountInput,
   CreateAccountOutput,
 } from './dtos/create-account.dto'
-import { LogintInput } from './dtos/login.dto'
+import { LoginInput } from './dtos/login.dto'
 import { User } from './entities/user.entity'
 import { JwtService } from 'src/jwt/jwt.service'
 import { EditProfileInput, EditProfileOutput } from './dtos/edit-profile.dto'
@@ -56,7 +56,8 @@ export class UsersService {
   async login({
     email,
     password,
-  }: LogintInput): Promise<{ ok: boolean; error?: string; token?: string }> {
+  }: LoginInput): Promise<{ ok: boolean; error?: string; token?: string }> {
+    console.log(email, password)
     try {
       const user = await this.users.findOne(
         { email },
