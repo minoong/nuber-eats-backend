@@ -57,7 +57,6 @@ export class UsersService {
     email,
     password,
   }: LoginInput): Promise<{ ok: boolean; error?: string; token?: string }> {
-    console.log(email, password)
     try {
       const user = await this.users.findOne(
         { email },
