@@ -26,6 +26,7 @@ import { OrderItem } from './orders/entities/order-item.entity'
 import { CommonModule } from './common/common.module'
 import { PaymentsModule } from './payments/payments.module'
 import { Payment } from './payments/entities/payment.entity'
+import { UploadsModule } from './uploads/uploads.module'
 
 @Module({
   imports: [
@@ -96,6 +97,7 @@ import { Payment } from './payments/entities/payment.entity'
     OrdersModule,
     CommonModule,
     PaymentsModule,
+    UploadsModule,
   ],
   controllers: [],
   providers: [],
