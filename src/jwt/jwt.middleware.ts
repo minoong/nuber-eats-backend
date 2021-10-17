@@ -9,7 +9,7 @@ interface RequestCustom extends Request {
 }
 
 @Injectable()
-export class JwtMiddleware implements NestMiddleware {
+export class JwtMiddleware implements NestMiddleware<Request, Response> {
   constructor(
     private readonly jwtServicce: JwtService,
     private readonly userService: UsersService,

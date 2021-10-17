@@ -2,7 +2,6 @@ import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common'
 import { Reflector } from '@nestjs/core'
 import { GqlExecutionContext } from '@nestjs/graphql'
 import { JwtService } from 'src/jwt/jwt.service'
-import { User } from 'src/users/entities/user.entity'
 import { UsersService } from 'src/users/users.service'
 import { AllowedRoles } from './role.decorator'
 
@@ -10,11 +9,11 @@ import { AllowedRoles } from './role.decorator'
 export class AuthGuard implements CanActivate {
   constructor(
     private readonly reflector: Reflector,
-    private readonly jwtServicce: JwtService,
+    private readonly jwtService: JwtService,
     private readonly userService: UsersService,
   ) {}
 
-  async canActivate(context: ExecutionContext) {
+  async canActivate(context: ExecutionContext): Promise<boolean> {
     const roles = this.reflector.get<AllowedRoles>(
       'roles',
       context.getHandler(),
@@ -27,10 +26,8 @@ export class AuthGuard implements CanActivate {
     const gqlContext = GqlExecutionContext.create(context).getContext()
     const token = gqlContext.token
 
-    console.log(token)
-
     if (token) {
-      const decoded = this.jwtServicce.verify(token.toString())
+      const decoded = this.jwtService.verify(token.toString())
 
       if (typeof decoded === 'object' && decoded.hasOwnProperty('id')) {
         const { user } = await this.userService.findById(decoded['id'])
