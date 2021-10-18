@@ -12,7 +12,7 @@ import { Dish } from 'src/restaurants/entities/dish.entity'
 import { Restaurant } from 'src/restaurants/entities/restaurant.entity'
 import { User, UserRole } from 'src/users/entities/user.entity'
 import { Repository } from 'typeorm'
-import { CreateOrderInput } from './dtos/create-order.dto'
+import { CreateOrderInput, CreateOrderOutput } from './dtos/create-order.dto'
 import { EditOrderInput, EditOrderOutput } from './dtos/edit-order.dto'
 import { GetOrderInput, GetOrderOutput } from './dtos/get-order.dto'
 import { GetOrdersInput, GetOrdersOutput } from './dtos/get-orders.dto'
@@ -35,7 +35,7 @@ export class OrderService {
   async createOrder(
     customer: User,
     { restaurantId, items }: CreateOrderInput,
-  ): Promise<CreateDishOutput> {
+  ): Promise<CreateOrderOutput> {
     try {
       const restaurant = await this.restaurants.findOne(restaurantId)
 
@@ -108,6 +108,7 @@ export class OrderService {
 
       return {
         ok: true,
+        orderId: order.id,
       }
     } catch (error) {
       return {
