@@ -71,7 +71,7 @@ export class OrderService {
             if (dishOption.extra) {
               dishFinalPrice += dishOption.extra
             } else {
-              const dishOptionChoice = dishOption.chioces.find(
+              const dishOptionChoice = dishOption.chioces?.find(
                 (optionChoice) => optionChoice.name === itemOption.chioce,
               )
               if (dishOptionChoice) {
