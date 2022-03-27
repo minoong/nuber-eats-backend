@@ -17,7 +17,11 @@
 
 #### 2. 레스토랑 등록
 
-![등록](https://user-images.githubusercontent.com/59505318/160275296-e53bd7f3-4e87-4fc4-b7bf-7d1213526fde.gif)
+![5등록](https://user-images.githubusercontent.com/59505318/160275643-434e555a-71f1-4f70-9cb1-950fc2c793e3.gif)
+
+#### 3. 메뉴 등록
+
+![5메뉴](https://user-images.githubusercontent.com/59505318/160275671-a06adc6c-bda4-4b1f-9c19-ab22d7a45868.gif)
 
 #### 3. 음식 주문 3개 클라이언트 연동 푸시
 
